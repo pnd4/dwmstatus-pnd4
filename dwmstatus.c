@@ -22,7 +22,7 @@ char *tzsocal = "America/Los_Angeles";
 // Sensors.. use full paths.
 char *sensor0 = "/sys/class/hwmon/hwmon1/device/temp1_input";
 
-// SUCKLESS's PRINTF()
+// SUCKLESS' PRINTF()
 char *
 smprintf(char *fmt, ...)
 {
