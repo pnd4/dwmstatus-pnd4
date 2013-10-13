@@ -118,7 +118,7 @@ gettemperature(char *sensor)
     
     if (str == NULL)
         return smprintf("");
-    return smprintf("%02.0f°C", atof(str) / 1000);
+    return smprintf("%02.0f°c", atof(str) / 1000);
 }
 
 // NETUSAGE
