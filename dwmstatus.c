@@ -20,7 +20,7 @@ char *tzutc = "UTC";
 char *tzsocal = "America/Los_Angeles";
 
 // Sensors.. use full paths.
-char *sensor0 = "/sys/class/hwmon/hwmon1/device/temp1_input";
+char *sensor0 = "/sys/class/hwmon/hwmon0/device/temp1_input";
 
 // SUCKLESS' PRINTF()
 char *
@@ -165,9 +165,9 @@ calculate_speed(char *speedstr, unsigned long long int newval, unsigned long lon
     speed = (newval - oldval) / 1024.0;
     if (speed > 1024.0) {
         speed /= 1024.0;
-        sprintf(speedstr, "%.3f MB/s", speed);
+        sprintf(speedstr, "%.2f M", speed);
     } else {
-        sprintf(speedstr, "%.2f KB/s", speed);
+        sprintf(speedstr, "%.2f K", speed);
     }
 }
 
@@ -189,7 +189,7 @@ get_netusage(unsigned long long int *rec, unsigned long long int *sent)
     calculate_speed(downspeedstr, newrec, *rec);
     calculate_speed(upspeedstr, newsent, *sent);
 
-    sprintf(retstr, "d: %s u: %s", downspeedstr, upspeedstr);
+    sprintf(retstr, "d[%s] u[%s]", downspeedstr, upspeedstr);
 
     *rec = newrec;
     *sent = newsent;
