@@ -216,19 +216,34 @@ getvolume() {
     return volume;
 }
 
+int runevery(time_t *ltime, int sec){
+    /* return 1 if `sec` elapsed since last run
+     * else return 0 
+    */
+    time_t now = time(NULL);
+    if ( difftime(now, *ltime ) >= sec)
+    {
+        *ltime = now;
+        return(1);
+    }
+    else 
+        return(0);
+}
+
 // MAIN: PUT IT ALL TOGETHER
 //
 int
 main(void)
 {
-	char *status;
-	char *avgs;
-	char *tmutc;
-	char *tmsocal;
-    char *temp0;
+	char *status=NULL;
+	char *avgs=NULL;
+	char *tmutc=NULL;
+	char *tmsocal=NULL;
+    char *temp0=NULL;
     int vol;
-    char *netstats;
+    char *netstats=NULL;
     static unsigned long long int rec, sent;
+    time_t count60 = 0;
 
 	if (!(dpy = XOpenDisplay(NULL))) {
 		fprintf(stderr, "dwmstatus: cannot open display.\n");
@@ -236,10 +251,16 @@ main(void)
 	}
 
     parse_netdev(&rec, &sent);
-	for (;;sleep(3)) {
+	for (;;sleep(1)) {
+        // Update these every minute
+        if (runevery(&count60, 60)) {
+                free(tmutc);
+                free(tmsocal);
+		        tmutc = mktimes("%H:%M", tzutc);
+		        tmsocal = mktimes("%a %b %d %H:%M", tzsocal);
+        }
+        // Update the rest every second
 		avgs = loadavg();
-		tmutc = mktimes("%H:%M", tzutc);
-		tmsocal = mktimes("%a %b %d %H:%M", tzsocal);
         temp0 = gettemperature(sensor0);
         vol = getvolume();
         netstats = get_netusage(&rec, &sent);
@@ -249,8 +270,7 @@ main(void)
 				avgs, temp0, netstats, vol, tmutc, tmsocal);
 		setstatus(status);
 		free(avgs);
-		free(tmutc);
-		free(tmsocal);
+        free(temp0);
 		free(status);
 	}
 
