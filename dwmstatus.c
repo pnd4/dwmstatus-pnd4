@@ -20,7 +20,9 @@ char *tzutc = "UTC";
 char *tzsocal = "America/Los_Angeles";
 
 // Sensors.. use full paths.
-char *sensor0 = "/sys/class/hwmon/hwmon0/device/temp1_input";
+//char *sensor0 = "/sys/class/hwmon/hwmon0/device/temp1_input";
+char *sensor0 = "/sys/class/hwmon/hwmon1/temp2_input";
+char *sensor1 = "/sys/class/hwmon/hwmon1/temp3_input";
 
 // SUCKLESS' PRINTF()
 char *
@@ -240,6 +242,7 @@ main(void)
 	char *tmutc=NULL;
 	char *tmsocal=NULL;
     char *temp0=NULL;
+    char *temp1=NULL;
     int vol;
     char *netstats=NULL;
     static unsigned long long int rec, sent;
@@ -262,15 +265,17 @@ main(void)
         // Update the rest every second
 		avgs = loadavg();
         temp0 = gettemperature(sensor0);
+        temp1 = gettemperature(sensor1);
         vol = getvolume();
         netstats = get_netusage(&rec, &sent);
 
 		//status = smprintf("\x04\u00B3\x01 %s \x04\u00B1\x01 %s \x04\u00A4\x01 %s \x04\u00B6\x01 %d \x04UTC\x01 %s \x04\u00B7\x01 %s \x04\u00A1 \u00A2 \u00A3 \u00A4 \u00A5 \u00A6 \u00A7 \u00A8 \u00A9 \u00B0 \u00B1 \u00B2 \u00B3 \u00B4 \u00B5 \u00B6 \u00B7 \u00B8 \u00B9 \u00C1 \x01",
-		status = smprintf("\x04\u00B3\x01 %s \x04\u00B1\x01 %s \x04\u00A4\x01 %s \x04\u00B6\x01 %d \x04UTC\x01 %s \x04\u00B7\x01 %s ",
-				avgs, temp0, netstats, vol, tmutc, tmsocal);
+		status = smprintf("\x04\u00B3\x01 %s \x04\u00B1\x01 %s %s \x04\u00A4\x01 %s \x04\u00B6\x01 %d \x04UTC\x01 %s \x04\u00B7\x01 %s ",
+				avgs, temp0, temp1, netstats, vol, tmutc, tmsocal);
 		setstatus(status);
 		free(avgs);
         free(temp0);
+        free(temp1);
 		free(status);
 	}
 
